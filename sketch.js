@@ -4,10 +4,16 @@ var chao, chaofotinha;
 
 var chaoinvisivel;
 
+var nuvenzinhas, nuvenzinhafotinha;
+
+
+
 function preload(){
     trexCorrendo = loadAnimation("trex1.png", "trex3.png", "trex4.png");
+    
     chaofotinha = loadImage("ground2.png");
 
+    nuvenzinhafotinha = loadImage("cloud.png");
 }
 
 function setup(){
@@ -26,8 +32,11 @@ function setup(){
     chaoinvisivel = createSprite(200, 190, 400, 10);
     chaoinvisivel.visible = false;
 
-    var numeroaleatorio = Math.round(random(1,100));
-    console.log(numeroaleatorio);
+    //CONCATENAÇÃO
+    //console.log("oi"+" Izabelli");
+
+    //var numeroaleatorio = Math.round(random(1,100));
+    //console.log(numeroaleatorio);
 
 }
 
@@ -35,6 +44,7 @@ function draw(){
 
     //cria um fundo branco
     background("white")
+    //console.log(frameCount);
 
     //console.log(trex.y);
 
@@ -61,5 +71,21 @@ function draw(){
 }
 
 function nuvenzinhasAleatorias(){
+
+    if(frameCount % 60 === 0){
+
+        nuvenzinhas = createSprite (600, 100, 40, 10);
+        nuvenzinhas.addImage(nuvenzinhafotinha);
+        
+        nuvenzinhas.y = Math.round(random (10, 100));
+        nuvenzinhas.velocityX = -3;
+        
+        nuvenzinhas.depth = trex.depth;
+
+        trex.depth = trex.depth + 1;
+
+        nuvenzinhas.lifetime = 250;
+        
+    }
 
 }
