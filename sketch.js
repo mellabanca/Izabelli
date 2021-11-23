@@ -1,91 +1,74 @@
-var trex, trexCorrendo;
+var Rexinho, RexinhoCorrendo;
 
-var chao, chaofotinha;
+var lugardopezinho, lugardopezinhochaozinho;
 
-var chaoinvisivel;
-
-var nuvenzinhas, nuvenzinhafotinha;
-
+var chaozinhoinvisivel;
 
 
 function preload(){
-    trexCorrendo = loadAnimation("trex1.png", "trex3.png", "trex4.png");
-    
-    chaofotinha = loadImage("ground2.png");
 
-    nuvenzinhafotinha = loadImage("cloud.png");
+    RexinhoCorrendo = loadAnimation("trex1.png", "trex3.png", "trex4.png");
+
+    lugardopezinhochaozinho = loadImage("ground2.png");
+
 }
+
 
 function setup(){
     createCanvas(600,200);
 
-    trex = createSprite(50,160,20,50);
-    trex.addAnimation("correndo", trexCorrendo);
-    trex.scale = 0.5;
+    Rexinho = createSprite(50,160,20,50);
+
+    Rexinho.addAnimation("correndo", RexinhoCorrendo);
+
+    Rexinho.scale = 0.5;
+
+    lugardopezinho= createSprite(200, 180, 400, 20);
+
+    lugardopezinho.addImage("pezinhodolugar", lugardopezinhochaozinho)
+
+    lugardopezinho.x = lugardopezinho.width / 2;
 
     borda = createEdgeSprites();
 
-    chao = createSprite(200, 180, 400, 20);
-    chao.addImage ("chao", chaofotinha);
-    chao.x = chao.width/2;
+    chaozinhoinvisivel = createSprite(100, 190, 400, 10); 
 
-    chaoinvisivel = createSprite(200, 190, 400, 10);
-    chaoinvisivel.visible = false;
+    chaozinhoinvisivel.visible = false;
 
-    //CONCATENAÇÃO
-    //console.log("oi"+" Izabelli");
+    //var numero = Math.round(random(1,50));
 
-    //var numeroaleatorio = Math.round(random(1,100));
-    //console.log(numeroaleatorio);
-
+    //console.log(numero);
 }
+
 
 function draw(){
 
-    //cria um fundo branco
-    background("white")
-    //console.log(frameCount);
+    background("white");
 
-    //console.log(trex.y);
+    //console.log (Rexinho.y);
 
-    //fazendo o trex pular
-    if(keyDown("space") && trex.y >= 150){
-        trex.velocityY = -10;
+    lugardopezinho.velocityX = -2
+    
+    if (lugardopezinho.x < 0){
+
+        lugardopezinho.x = lugardopezinho.width / 2;
     }
 
-    //sistema de gravidade
-    trex.velocityY = trex.velocityY + 1;
+    if(keyDown("space") && Rexinho.y >= 150){
 
-    //impede que o trex caixa
-    trex.collide(chaoinvisivel);
-    chao.velocityX = -2;
-    if(chao.x < 0){
-        chao.x = chao.width/2;
+        Rexinho.velocityY = -10;
+
     }
+    Rexinho.velocityY = Rexinho.velocityY + 1;
 
-    nuvenzinhasAleatorias();
+    Rexinho.collide(chaozinhoinvisivel);
 
-    //desenha todos os sprites
+    nuvenhador();
+
     drawSprites();
 
 }
 
-function nuvenzinhasAleatorias(){
-
-    if(frameCount % 60 === 0){
-
-        nuvenzinhas = createSprite (600, 100, 40, 10);
-        nuvenzinhas.addImage(nuvenzinhafotinha);
-        
-        nuvenzinhas.y = Math.round(random (10, 100));
-        nuvenzinhas.velocityX = -3;
-        
-        nuvenzinhas.depth = trex.depth;
-
-        trex.depth = trex.depth + 1;
-
-        nuvenzinhas.lifetime = 250;
-        
-    }
+function nuvenhador(){
 
 }
