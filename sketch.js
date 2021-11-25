@@ -59,6 +59,9 @@ function setup(){
 
     placar = 0;
 
+    trex.setCollider("circle",0,0,40);
+    trex.debug = true;
+
 }
 
 function draw(){
@@ -68,35 +71,49 @@ function draw(){
     //console.log(frameCount);
 
     text("Placar: "+ placar, 500, 50);
+
+    //console.log("isto é:"+estado);
     
     if(estado === jogando){
         
         placar = placar + Math.round(frameCount/60);
 
+        if(keyDown("space") && trex.y >= 150){
+            trex.velocityY = -10;
+        }
+
+        trex.velocityY = trex.velocityY + 1;
+
+        chao.velocityX = -2;
+
+        if(chao.x < 0){
+            chao.x = chao.width/2;
+        }
+
+        nuvenzinhasAleatorias();
+
+        cactos();
+
+        if(grupodeobs.isTouching (trex)){
+
+            estado = restart;
+
+        }
+
     } else if (estado === restart){
+
+        grupodeobs.setVelocityXEach (0);
+
+        grupodenuvens.setVelocityXEach (0);
+
+        chao.velocityX = 0;
 
     }
 
     //console.log(trex.y);
 
-    //fazendo o trex pular
-    if(keyDown("space") && trex.y >= 150){
-        trex.velocityY = -10;
-    }
-
-    //sistema de gravidade
-    trex.velocityY = trex.velocityY + 1;
-
     //impede que o trex caixa
     trex.collide(chaoinvisivel);
-    chao.velocityX = -2;
-    if(chao.x < 0){
-        chao.x = chao.width/2;
-    }
-
-    nuvenzinhasAleatorias();
-
-    cactos();
 
     //desenha todos os sprites
     drawSprites();
