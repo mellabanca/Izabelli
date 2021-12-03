@@ -1,4 +1,4 @@
-var trex, trexCorrendo;
+var trex, trexCorrendo, trexbateu, checkpoint, trexpulandoSom;
 
 var chao, chaofotinha;
 
@@ -14,14 +14,29 @@ var restart = 0;
 
 var jogando = 1;
 
+var gameover, gameoverimage, gameoverSom;
+
+var resetar, resetarimage;
+
 var estado = jogando;
 
+var mensagem = "isso é uma mensagem";
+
 function preload(){
+
+    //carrega as animações
     trexCorrendo = loadAnimation("trex1.png", "trex3.png", "trex4.png");
     
+    trexbateu = loadAnimation("trex_collided.png");
+
+    //carrega as imagem
     chaofotinha = loadImage("ground2.png");
 
     nuvenzinhafotinha = loadImage("cloud.png");
+
+    resetarimage = loadImage("restart.png");
+
+    gameoverimage = loadImage("gameOver.png");
 
     obs1 = loadImage("obstacle1.png");
     obs2 = loadImage("obstacle2.png");
@@ -30,13 +45,22 @@ function preload(){
     obs5 = loadImage("obstacle5.png");
     obs6 = loadImage("obstacle6.png");
 
+    checkpoint = loadSound("checkPoint.mp3");
+
+    trexpulandoSom = loadSound("jump.mp3");
+
+    gameoverSom = loadSound("die.mp3");
+
 }
 
 function setup(){
+
+    //cria a tela
     createCanvas(600,200);
 
     trex = createSprite(50,160,20,50);
     trex.addAnimation("correndo", trexCorrendo);
+    trex.addAnimation("bateu", trexbateu);
     trex.scale = 0.5;
 
     borda = createEdgeSprites();
@@ -47,6 +71,14 @@ function setup(){
 
     chaoinvisivel = createSprite(200, 190, 400, 10);
     chaoinvisivel.visible = false;
+
+    gameover = createSprite(300, 100);
+    gameover.addImage(gameoverimage);
+    gameover.scale = 0.5;
+
+    resetar = createSprite(300, 140);
+    resetar.addImage(resetarimage);
+    resetar.scale = 0.5;
 
     grupodenuvens = new Group();
     grupodeobs = new Group();
@@ -59,12 +91,15 @@ function setup(){
 
     placar = 0;
 
+    //configura o colisor do trex
     trex.setCollider("circle",0,0,40);
-    trex.debug = true;
+    //trex.debug = true;
 
 }
 
 function draw(){
+
+    //console.log(mensagem);
 
     //cria um fundo branco
     background("white")
@@ -74,17 +109,27 @@ function draw(){
 
     //console.log("isto é:"+estado);
     
+
+    //as condiçoes do jogo
     if(estado === jogando){
         
         placar = placar + Math.round(frameCount/60);
+        if(placar > 0 && placar % 100 === 0){
+            checkpoint.play();
 
-        if(keyDown("space") && trex.y >= 150){
-            trex.velocityY = -10;
         }
 
+
+        if(keyDown("space") && trex.y >= 150){
+            trex.velocityY = -12;
+            trexpulandoSom.play();
+
+        }
+
+        //sistema de gravidade
         trex.velocityY = trex.velocityY + 1;
 
-        chao.velocityX = -2;
+        chao.velocityX = -(2 + placar/100);
 
         if(chao.x < 0){
             chao.x = chao.width/2;
@@ -97,6 +142,7 @@ function draw(){
         if(grupodeobs.isTouching (trex)){
 
             estado = restart;
+            gameoverSom.play();
 
         }
 
@@ -108,6 +154,15 @@ function draw(){
 
         chao.velocityX = 0;
 
+        trex.changeAnimation("bateu", trexbateu);
+
+        grupodenuvens.setLifetimeEach(-1);
+
+        grupodeobs.setLifetimeEach(-1);
+
+        trex.velocityY = 0;
+        
+
     }
 
     //console.log(trex.y);
@@ -115,9 +170,17 @@ function draw(){
     //impede que o trex caixa
     trex.collide(chaoinvisivel);
 
+    if(mousePressedOver(resetar)){
+        reset();
+    }
+
     //desenha todos os sprites
     drawSprites();
 
+}
+
+function reset(){
+    
 }
 
 function nuvenzinhasAleatorias(){
@@ -147,7 +210,7 @@ function cactos(){
     if(frameCount % 60 === 0){
 
         cactosObs = createSprite (600, 165, 10, 40);
-        cactosObs.velocityX = -6;
+        cactosObs.velocityX = -(6 + placar/100);
 
         var um = Math.round(random(1, 6));
 
